@@ -13,6 +13,7 @@
 
 from __future__ import print_function, division, absolute_import
 from fastapi import FastAPI
+from apitest.io.access import get_cube, get_header
 
 app = FastAPI()
 
@@ -21,3 +22,18 @@ app = FastAPI()
 async def hello():
     return {'hello fastapi': 'world'}
 
+
+@app.get("/header/")
+def header():
+    cube = get_cube()
+    hdr = get_header(cube)
+    results = {'stream': cube, 'header': hdr.tostring()}
+    return results
+
+
+@app.get("/aheader/")
+async def async_header():
+    cube = get_cube()
+    hdr = get_header(cube)
+    results = {'stream': cube, 'header': hdr.tostring()}
+    return results

@@ -12,8 +12,8 @@
 
 
 from __future__ import print_function, division, absolute_import
-
 from quart import Quart
+from apitest.io.access import get_cube, get_header
 
 app = Quart(__name__)
 
@@ -21,6 +21,22 @@ app = Quart(__name__)
 @app.route('/')
 async def hello():
     return {'hello quart': 'hello'}
+
+
+@app.route('/header/')
+def header():
+    cube = get_cube()
+    hdr = get_header(cube)
+    results = {'stream': cube, 'header': hdr.tostring()}
+    return results
+
+
+@app.route('/aheader/')
+async def async_header():
+    cube = get_cube()
+    hdr = get_header(cube)
+    results = {'stream': cube, 'header': hdr.tostring()}
+    return results
 
 
 app.run()

@@ -20,6 +20,14 @@ class UserBehaviour(TaskSet):
     def index(self):
         self.client.get("/")
 
+    @task(2)
+    def header(self):
+        self.client.get("/header")
+
+    @task(2)
+    def async_header(self):
+        self.client.get("/aheader")
+
 
 class WebsiteUser(HttpUser):
     tasks = {UserBehaviour: 2}
