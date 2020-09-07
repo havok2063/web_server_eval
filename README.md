@@ -9,9 +9,15 @@ This repo evaluates and compares the following APIs:
 - Starlette (not yet)
 - Black Sheep (not yet)
 
+Set up the repo
+```
+git clone https://github.com/havok2063/web_server_eval
+pip install -e .
+```
+
 To run a web server individually, navigate into the relevant API subdirectory within `apitest`
 
-- Flask - `flask run -p [PORT]`
+- Flask - `flask run --reload -p [PORT]`.  Optionally set `export FLASK_ENV=development`.
 - Quart - `quart run`
 - FastAPI - `uvicorn app:app --reload`
 - Starlette
