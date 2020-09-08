@@ -13,8 +13,8 @@
 
 from __future__ import print_function, division, absolute_import
 import orjson
-from quart import Quart, Response
-from apitest.io.access import get_cube, get_header, get_data
+from quart import Quart, Response, send_file
+from apitest.io.access import get_cube, get_header, get_data, get_path
 
 app = Quart(__name__)
 
@@ -52,6 +52,18 @@ async def json(ext):
     results = {'stream': cube, 'header': hdr.tostring(), 'data': data}
     compressed = await compdata(results)
     return Response(compressed, mimetype='application/json')
+
+
+@app.route('/dlimage/')
+async def download_image():
+    im = get_path('mangaimage', plate=8485, ifu=1901, drpver='v2_4_3', dir3d='stack')
+    return await send_file(im, as_attachment=True)
+
+
+@app.route('/dlfile/')
+async def download_file():
+    cube = get_cube()
+    return await send_file(cube, as_attachment=True)
 
 
 app.run()

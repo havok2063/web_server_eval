@@ -36,6 +36,10 @@ class UserBehaviour(TaskSet):
     def wave_ext(self):
         self.client.get("/file/wave")
 
+    @task(2)
+    def download_image(self):
+        self.client.get("/dlimage")
+
 
 class WebsiteUser(HttpUser):
     tasks = {UserBehaviour: 2}

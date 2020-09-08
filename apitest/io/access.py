@@ -19,9 +19,16 @@ from astropy.io import fits
 path = Path(public=True, release='DR15')
 
 
-def get_path(name, **kwargs):
+def get_path(name, ptype='full', **kwargs):
     ''' get an sdss_access local filepath '''
-    return path.full(name, **kwargs)
+    if ptype == 'full':
+        return path.full(name, **kwargs)
+    elif ptype == 'name':
+        return path.name(name, **kwargs)
+    elif ptype == 'url':
+        return path.url(name, **kwargs)
+    else:
+        return path.full(name, **kwargs)
 
 
 def get_cube(plate=8485, ifu=1901, drpver='v2_4_3'):

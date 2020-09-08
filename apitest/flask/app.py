@@ -12,10 +12,11 @@
 
 
 from __future__ import print_function, division, absolute_import
+import imaplib
 import orjson
-from flask import Flask, Response
+from flask import Flask, Response, send_file
 from flask_restful import Resource, Api
-from apitest.io.access import get_cube, get_header, get_data
+from apitest.io.access import get_cube, get_header, get_data, get_path
 
 app = Flask(__name__)
 api = Api(app)
@@ -43,9 +44,23 @@ class FileExt(Resource):
                         mimetype='application/json')
 
 
+class DownloadImage(Resource):
+    def get(self):
+        im = get_path('mangaimage', plate=8485, ifu=1901, drpver='v2_4_3', dir3d='stack')
+        return send_file(im, as_attachment=True)
+
+
+class DownloadFile(Resource):
+    def get(self):
+        cube = get_cube()
+        return send_file(cube, as_attachment=True)
+
+
 api.add_resource(HelloWorld, '/')
 api.add_resource(FitsHeader, '/header', '/aheader')
 api.add_resource(FileExt, '/file/<string:ext>')
+api.add_resource(DownloadImage, '/dlimage')
+api.add_resource(DownloadFile, '/dlfile')
 
 
 if __name__ == '__main__':
