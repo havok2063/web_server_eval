@@ -12,8 +12,10 @@
 
 
 from __future__ import print_function, division, absolute_import
+import orjson
 from fastapi import FastAPI
-from apitest.io.access import get_cube, get_header
+from fastapi.responses import Response
+from apitest.io.access import get_cube, get_header, get_data
 
 app = FastAPI()
 
@@ -37,3 +39,13 @@ async def async_header():
     hdr = get_header(cube)
     results = {'stream': cube, 'header': hdr.tostring()}
     return results
+
+
+@app.get('/file/{ext}')
+async def fits_ext(ext: str):
+    cube = get_cube()
+    data, hdr = get_data(cube, ext.upper(), header=True)
+    results = {'stream': cube, 'header': hdr.tostring(), 'data': data}
+    # this is temporary until fastapi.responses.ORJSONResponse can accept options
+    return Response(orjson.dumps(results, option=orjson.OPT_SERIALIZE_NUMPY),
+                    media_type='application/json')

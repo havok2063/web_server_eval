@@ -28,6 +28,14 @@ class UserBehaviour(TaskSet):
     def async_header(self):
         self.client.get("/aheader")
 
+    @task(2)
+    def flux_ext(self):
+        self.client.get("/file/flux")
+
+    @task(2)
+    def wave_ext(self):
+        self.client.get("/file/wave")
+
 
 class WebsiteUser(HttpUser):
     tasks = {UserBehaviour: 2}

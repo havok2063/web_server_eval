@@ -12,8 +12,9 @@
 
 
 from __future__ import print_function, division, absolute_import
-from quart import Quart
-from apitest.io.access import get_cube, get_header
+import orjson
+from quart import Quart, Response
+from apitest.io.access import get_cube, get_header, get_data
 
 app = Quart(__name__)
 
@@ -37,6 +38,20 @@ async def async_header():
     hdr = get_header(cube)
     results = {'stream': cube, 'header': hdr.tostring()}
     return results
+
+
+async def compdata(data):
+    ''' compress the data '''
+    return orjson.dumps(data, option=orjson.OPT_SERIALIZE_NUMPY)
+
+
+@app.route('/file/<string:ext>')
+async def json(ext):
+    cube = get_cube()
+    data, hdr = get_data(cube, ext=ext.upper(), header=True)
+    results = {'stream': cube, 'header': hdr.tostring(), 'data': data}
+    compressed = await compdata(results)
+    return Response(compressed, mimetype='application/json')
 
 
 app.run()

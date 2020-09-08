@@ -12,9 +12,10 @@
 
 
 from __future__ import print_function, division, absolute_import
-from flask import Flask
+import orjson
+from flask import Flask, Response
 from flask_restful import Resource, Api
-from apitest.io.access import get_cube, get_header
+from apitest.io.access import get_cube, get_header, get_data
 
 app = Flask(__name__)
 api = Api(app)
@@ -33,8 +34,18 @@ class FitsHeader(Resource):
         return results
 
 
+class FileExt(Resource):
+    def get(self, ext):
+        cube = get_cube()
+        data, hdr = get_data(cube, ext.upper(), header=True)
+        results = {'stream': cube, 'header': hdr.tostring(), 'data': data}
+        return Response(orjson.dumps(results, option=orjson.OPT_SERIALIZE_NUMPY),
+                        mimetype='application/json')
+
+
 api.add_resource(HelloWorld, '/')
 api.add_resource(FitsHeader, '/header', '/aheader')
+api.add_resource(FileExt, '/file/<string:ext>')
 
 
 if __name__ == '__main__':
