@@ -67,7 +67,7 @@ async def fits_ext(ext: str):
 
 
 @app.get("/dlimage")
-async def image_response():
+async def download_image():
     ''' async streams a file as a response '''
     im = get_path('mangaimage', plate=8485, ifu=1901, drpver='v2_4_3', dir3d='stack')
     imname = get_path('mangaimage', full=im, ptype='name')
